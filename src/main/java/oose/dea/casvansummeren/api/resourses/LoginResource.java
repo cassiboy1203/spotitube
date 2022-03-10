@@ -2,7 +2,7 @@ package oose.dea.casvansummeren.api.resourses;
 
 import oose.dea.casvansummeren.exceptions.InvalidLoginException;
 import oose.dea.casvansummeren.api.DTO.LoginDTO;
-import oose.dea.casvansummeren.api.ILoginService;
+import oose.dea.casvansummeren.api.interfaces.ILoginService;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
