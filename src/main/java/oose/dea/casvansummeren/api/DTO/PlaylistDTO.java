@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PlaylistDTO {
-    private int id = 1;
-    private String name = "a";
+    private int id;
+    private String name;
     private boolean owner;
     private List<TrackDTO> tracks = new ArrayList<>();
     private int length = 1;

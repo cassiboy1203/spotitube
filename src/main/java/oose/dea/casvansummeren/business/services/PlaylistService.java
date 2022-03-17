@@ -1,13 +1,14 @@
 package oose.dea.casvansummeren.business.services;
 
+import oose.dea.casvansummeren.api.DTO.PlaylistDTO;
 import oose.dea.casvansummeren.api.DTO.PlaylistsResponseDTO;
-import oose.dea.casvansummeren.api.DTO.TrackDTO;
+import oose.dea.casvansummeren.api.DTO.TrackResponseDTO;
 import oose.dea.casvansummeren.api.interfaces.IPlaylistService;
 import oose.dea.casvansummeren.business.interfaces.IPlaylistDAO;
+import oose.dea.casvansummeren.exceptions.InvalidPermissionException;
 
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
-import java.util.List;
 
 @Default
 public class PlaylistService extends SpotitubeService implements IPlaylistService {
@@ -23,9 +24,7 @@ public class PlaylistService extends SpotitubeService implements IPlaylistServic
     public PlaylistsResponseDTO getPlaylists(String token) {
         var userid = authService.getUser(token);
         var playlistResponse = new PlaylistsResponseDTO();
-        var playlists = playlistDAO.getPlaylists();
-
-        //TODO: check if user is owner
+        var playlists = playlistDAO.getPlaylists(userid);
 
         var playlistsLength = playlists.stream().mapToInt(playlistDTO -> playlistDTO.getLength()).sum();
 
@@ -36,8 +35,41 @@ public class PlaylistService extends SpotitubeService implements IPlaylistServic
     }
 
     @Override
-    public List<TrackDTO> getTracks(int id, String token) {
+    public TrackResponseDTO getTracks(int id, String token) {
         var userid = authService.getUser(token);
-        return playlistDAO.getTracks(id);
+        var tracks = new TrackResponseDTO();
+        tracks.setTracks(playlistDAO.getTracks(id));
+        return tracks;
+    }
+
+    @Override
+    public void addPlaylist(PlaylistDTO playlist, String token) {
+        var userid = authService.getUser(token);
+        playlistDAO.addPlaylist(playlist, userid);
+    }
+
+    @Override
+    public void updatePlaylistName(int id, PlaylistDTO playlistDTO, String token) {
+        var userId = authService.getUser(token);
+        if (isOwnerOfPlaylist(userId, id)){
+            playlistDAO.updatePlaylistName(id,playlistDTO);
+        } else {
+            throw new InvalidPermissionException();
+        }
+    }
+
+    @Override
+    public void deletePlaylist(int id, String token) {
+        var userId = authService.getUser(token);
+        if (isOwnerOfPlaylist(userId, id)){
+            playlistDAO.deletePlaylist(id);
+        } else {
+            throw new InvalidPermissionException();
+        }
+    }
+
+    private boolean isOwnerOfPlaylist(int userId, int playlistId){
+        var owner = playlistDAO.getPlaylistOwner(playlistId);
+        return owner == userId;
     }
 }

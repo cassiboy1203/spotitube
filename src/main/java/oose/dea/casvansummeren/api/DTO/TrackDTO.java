@@ -1,14 +1,14 @@
 package oose.dea.casvansummeren.api.DTO;
 
 public class TrackDTO {
-    private int id = 1;
-    private String title = "a";
-    private String performer = "a";
-    private int duration = 1;
-    private String album = "a";
-    private int playcount = 0;
-    private String publicationDate = "a";
-    private String description = "a";
+    private int id;
+    private String title;
+    private String performer;
+    private int duration;
+    private String album;
+    private int playcount;
+    private String publicationDate;
+    private String description;
     private boolean offlineAvailable;
 
     public int getId() {

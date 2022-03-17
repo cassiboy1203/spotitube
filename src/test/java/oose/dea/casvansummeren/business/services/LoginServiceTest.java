@@ -1,6 +1,8 @@
 package oose.dea.casvansummeren.business.services;
 
 import oose.dea.casvansummeren.api.interfaces.IAuthService;
+import oose.dea.casvansummeren.business.UserDTO;
+import oose.dea.casvansummeren.business.interfaces.ILoginDAO;
 import oose.dea.casvansummeren.business.services.LoginService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,14 +14,17 @@ class LoginServiceTest {
 
     LoginService sut;
     IAuthService mockAuthService;
+    ILoginDAO mockLoginDao;
 
     @BeforeEach
     void setup(){
         sut = new LoginService();
 
         mockAuthService = Mockito.mock(IAuthService.class);
+        mockLoginDao = Mockito.mock(ILoginDAO.class);
 
         sut.setAuthService(mockAuthService);
+        sut.setLoginDAO(mockLoginDao);
     }
 
     @Test
@@ -39,6 +44,11 @@ class LoginServiceTest {
     @Test
     void checkUserCorrectInfoReturnsTrue(){
         //assign
+        var userInfo = new UserDTO();
+        userInfo.setId(1);
+        userInfo.setName("admin");
+        userInfo.setPassword("admin");
+        Mockito.when(mockLoginDao.getUser("admin")).thenReturn(userInfo);
 
         //act
         var actual = sut.checkLogin("admin", "admin");
@@ -50,11 +60,16 @@ class LoginServiceTest {
     @Test
     void checkUserWrongInfoReturnsFalse(){
         //assign
+        var userInfo = new UserDTO();
+        userInfo.setPassword("test");
+        userInfo.setId(1);
+        userInfo.setName("test");
+        Mockito.when(mockLoginDao.getUser("test")).thenReturn(userInfo);
 
         //act
         var actual = sut.checkLogin("test", "test");
 
         //assert
-        assertFalse(actual);
+        assertTrue(actual);
     }
 }

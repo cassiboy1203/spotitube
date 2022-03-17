@@ -5,6 +5,7 @@ import oose.dea.casvansummeren.business.interfaces.IAuthDAO;
 
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
+import java.util.UUID;
 
 @Default
 public class AuthService implements IAuthService {
@@ -18,13 +19,12 @@ public class AuthService implements IAuthService {
 
     @Override
     public String generateToken() {
-        //return UUID.randomUUID().toString();
-        return "cbcc6ed9-eb6b-439c-b0c0-8d5b9c676e0e";
+        return UUID.randomUUID().toString();
     }
 
     @Override
-    public void saveToken(String token, String username) {
-        authDAO.saveAuth(token, username);
+    public void saveToken(String token, int user) {
+        authDAO.saveAuth(token, user);
     }
 
     @Override

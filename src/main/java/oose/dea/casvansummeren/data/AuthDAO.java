@@ -1,25 +1,33 @@
 package oose.dea.casvansummeren.data;
 
 import oose.dea.casvansummeren.business.interfaces.IAuthDAO;
-import oose.dea.casvansummeren.exceptions.UserNotFoundException;
+import oose.dea.casvansummeren.exceptions.InvalidPermissionException;
 
 import javax.enterprise.inject.Default;
+import javax.inject.Singleton;
+import java.util.HashMap;
+import java.util.Map;
 
 @Default
+@Singleton
 public class AuthDAO implements IAuthDAO {
+
+    private Map<String, Integer> auths = new HashMap<>();
+
     @Override
     public int getUserId(String token) {
         try {
-            if (token.equals("cbcc6ed9-eb6b-439c-b0c0-8d5b9c676e0e"))
-                return 0;
+            return auths.get(token);
         } catch (NullPointerException e){
-            throw new UserNotFoundException();
+            throw new InvalidPermissionException();
         }
-        throw new UserNotFoundException();
     }
 
     @Override
-    public void saveAuth(String token, String user) {
+    public void saveAuth(String token, int user) {
 
+        auths.values().removeIf(v -> v == user);
+
+        auths.put(token, user);
     }
 }

@@ -1,8 +1,7 @@
 package oose.dea.casvansummeren.business.services;
 
 import oose.dea.casvansummeren.business.interfaces.IAuthDAO;
-import oose.dea.casvansummeren.business.services.AuthService;
-import oose.dea.casvansummeren.exceptions.UserNotFoundException;
+import oose.dea.casvansummeren.exceptions.InvalidPermissionException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -52,10 +51,10 @@ class AuthServiceTest {
     @Test
     void getUserWithWrongTokenThrowsUserNotFoundException(){
         //assign
-        Mockito.when(mockAuthDAO.getUserId("")).thenThrow(UserNotFoundException.class);
+        Mockito.when(mockAuthDAO.getUserId("")).thenThrow(InvalidPermissionException.class);
 
         //assert
-        assertThrows(UserNotFoundException.class, () ->{
+        assertThrows(InvalidPermissionException.class, () ->{
             //act
             sut.getUser("");
         });
@@ -64,13 +63,13 @@ class AuthServiceTest {
     @Test
     void saveUserExecutesSaveUserInAuthDAO(){
         //assign
-        var username = "test";
+        var user = 1;
         var token = "1234-1234-1234";
 
         //act
-        sut.saveToken(token, username);
+        sut.saveToken(token, user);
 
         //assert
-        Mockito.verify(mockAuthDAO).saveAuth(token, username);
+        Mockito.verify(mockAuthDAO).saveAuth(token, user);
     }
 }
