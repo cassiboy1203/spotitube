@@ -1,8 +1,9 @@
 package oose.dea.casvansummeren.api.resourses;
 
-import oose.dea.casvansummeren.api.DTO.PlaylistDTO;
-import oose.dea.casvansummeren.api.DTO.PlaylistsResponseDTO;
-import oose.dea.casvansummeren.api.DTO.TrackResponseDTO;
+import oose.dea.casvansummeren.DTO.PlaylistDTO;
+import oose.dea.casvansummeren.DTO.PlaylistsResponseDTO;
+import oose.dea.casvansummeren.DTO.TrackDTO;
+import oose.dea.casvansummeren.DTO.TrackResponseDTO;
 import oose.dea.casvansummeren.api.interfaces.IPlaylistService;
 import oose.dea.casvansummeren.exceptions.PlaylistNotFoundException;
 import oose.dea.casvansummeren.exceptions.InvalidPermissionException;
@@ -18,6 +19,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class PlaylistResourceTest {
 
     private static final String TOKEN_DUMMY = "";
+    private static final int PLAYLIST_ID_DUMMY = 1;
+    private static final int TRACK_ID_DUMMY = 1;
 
     private PlaylistResource sut;
     private IPlaylistService mockPlaylistService;
@@ -61,10 +64,10 @@ class PlaylistResourceTest {
         var expected = new TrackResponseDTO();
         expected.setTracks(new ArrayList<>());
 
-        Mockito.when(mockPlaylistService.getTracks(1,TOKEN_DUMMY)).thenReturn(expected);
+        Mockito.when(mockPlaylistService.getTracks(PLAYLIST_ID_DUMMY,TOKEN_DUMMY)).thenReturn(expected);
 
         //act
-        var actual = sut.getTracks(1, TOKEN_DUMMY);
+        var actual = sut.getTracks(PLAYLIST_ID_DUMMY, TOKEN_DUMMY);
 
         //assert
         assertEquals(expected, actual.getEntity());
@@ -73,24 +76,24 @@ class PlaylistResourceTest {
     @Test
     void getTracksNotExistingTokenThrowsUserNotFoundException(){
         //assign
-        Mockito.when(mockPlaylistService.getTracks(0,TOKEN_DUMMY)).thenThrow(InvalidPermissionException.class);
+        Mockito.when(mockPlaylistService.getTracks(PLAYLIST_ID_DUMMY,TOKEN_DUMMY)).thenThrow(InvalidPermissionException.class);
 
         //assert
         assertThrows(InvalidPermissionException.class, () -> {
             //act
-            sut.getTracks(0,TOKEN_DUMMY);
+            sut.getTracks(PLAYLIST_ID_DUMMY,TOKEN_DUMMY);
         });
     }
 
     @Test
     void getTracksNotExistingPlaylistThrowsPlaylistNotFoundException(){
         //assign
-        Mockito.when(mockPlaylistService.getTracks(0,TOKEN_DUMMY)).thenThrow(PlaylistNotFoundException.class);
+        Mockito.when(mockPlaylistService.getTracks(PLAYLIST_ID_DUMMY,TOKEN_DUMMY)).thenThrow(PlaylistNotFoundException.class);
 
         //assert
         assertThrows(PlaylistNotFoundException.class, () -> {
             //act
-            sut.getTracks(0,TOKEN_DUMMY);
+            sut.getTracks(PLAYLIST_ID_DUMMY,TOKEN_DUMMY);
         });
     }
 
@@ -117,10 +120,10 @@ class PlaylistResourceTest {
         Mockito.when(mockPlaylistService.getPlaylists(TOKEN_DUMMY)).thenReturn(expected);
 
         //act
-        var actual = sut.updatePlaylistName(1, playlist, TOKEN_DUMMY);
+        var actual = sut.updatePlaylistName(PLAYLIST_ID_DUMMY, playlist, TOKEN_DUMMY);
 
         //assert
-        Mockito.verify(mockPlaylistService).updatePlaylistName(1 ,playlist, TOKEN_DUMMY);
+        Mockito.verify(mockPlaylistService).updatePlaylistName(PLAYLIST_ID_DUMMY ,playlist, TOKEN_DUMMY);
         assertEquals(expected, actual.getEntity());
     }
 
@@ -131,10 +134,39 @@ class PlaylistResourceTest {
         Mockito.when(mockPlaylistService.getPlaylists(TOKEN_DUMMY)).thenReturn(expected);
 
         //act
-        var actual = sut.deletePlaylist(1, TOKEN_DUMMY);
+        var actual = sut.deletePlaylist(PLAYLIST_ID_DUMMY, TOKEN_DUMMY);
 
         //assert
-        Mockito.verify(mockPlaylistService).deletePlaylist(1, TOKEN_DUMMY);
+        Mockito.verify(mockPlaylistService).deletePlaylist(PLAYLIST_ID_DUMMY, TOKEN_DUMMY);
+        assertEquals(expected, actual.getEntity());
+    }
+
+    @Test
+    void addTrackToPlaylistsReturnsUpdatedListOfTracks(){
+        //assign
+        var expected = new TrackResponseDTO();
+        var track = new TrackDTO();
+        Mockito.when(mockPlaylistService.getTracks(PLAYLIST_ID_DUMMY, TOKEN_DUMMY)).thenReturn(expected);
+
+        //act
+        var actual = sut.addTrackToPlaylist(PLAYLIST_ID_DUMMY, track, TOKEN_DUMMY);
+
+        //assert
+        Mockito.verify(mockPlaylistService).addTrackToPlaylist(PLAYLIST_ID_DUMMY, track, TOKEN_DUMMY);
+        assertEquals(expected, actual.getEntity());
+    }
+
+    @Test
+    void removeTrackFromPlaylistReturnsUpdatedListOfTracks(){
+        //assign
+        var expected = new TrackResponseDTO();
+        Mockito.when(mockPlaylistService.getTracks(PLAYLIST_ID_DUMMY, TOKEN_DUMMY)).thenReturn(expected);
+
+        //act
+        var actual = sut.removeTrackFromPlaylist(PLAYLIST_ID_DUMMY, TRACK_ID_DUMMY, TOKEN_DUMMY);
+
+        //assert
+        Mockito.verify(mockPlaylistService).removeTrackFromPlaylist(PLAYLIST_ID_DUMMY, TRACK_ID_DUMMY, TOKEN_DUMMY);
         assertEquals(expected, actual.getEntity());
     }
 }

@@ -4,7 +4,7 @@ import oose.dea.casvansummeren.api.interfaces.IAuthService;
 
 import javax.inject.Inject;
 
-public class SpotitubeService {
+public abstract class SpotitubeService {
 
     protected IAuthService authService;
 

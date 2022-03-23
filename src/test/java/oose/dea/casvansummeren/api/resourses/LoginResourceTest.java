@@ -1,7 +1,7 @@
 package oose.dea.casvansummeren.api.resourses;
 
-import oose.dea.casvansummeren.api.DTO.LoginDTO;
-import oose.dea.casvansummeren.api.DTO.LoginResponseDTO;
+import oose.dea.casvansummeren.DTO.LoginDTO;
+import oose.dea.casvansummeren.DTO.LoginResponseDTO;
 import oose.dea.casvansummeren.api.interfaces.ILoginService;
 import oose.dea.casvansummeren.exceptions.InvalidLoginException;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,6 +14,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class LoginResourceTest {
+
+    private static final String USER_NAME_DUMMY = "admin";
+    private static final String PASSWORD_DUMMY = "admin";
+    private static final String TOKEN_DUMMY = "1234-1234-1234";
 
     private LoginResource sut;
     private ILoginService mockLoginService;
@@ -30,15 +34,15 @@ class LoginResourceTest {
     void LoginAsAdminTest(){
         //assign
         var input  = new LoginDTO();
-        input.setUser("admin");
-        input.setPassword("admin");
+        input.setUser(USER_NAME_DUMMY);
+        input.setPassword(PASSWORD_DUMMY);
 
         var expected = new LoginResponseDTO();
-        expected.setToken("1234-1234-1234");
-        expected.setUser("admin");
+        expected.setToken(TOKEN_DUMMY);
+        expected.setUser(USER_NAME_DUMMY);
 
-        Mockito.when(mockLoginService.generateResponse("admin")).thenReturn(expected);
-        Mockito.when(mockLoginService.checkLogin("admin","admin")).thenReturn(true);
+        Mockito.when(mockLoginService.generateResponse(USER_NAME_DUMMY)).thenReturn(expected);
+        Mockito.when(mockLoginService.checkLogin(USER_NAME_DUMMY,PASSWORD_DUMMY)).thenReturn(true);
 
         var expectedStatus = Response.status(Response.Status.CREATED).build().getStatus();
 
@@ -55,12 +59,12 @@ class LoginResourceTest {
     void InvalidUserName(){
         //assign
         var input = new LoginDTO();
-        input.setUser("test");
-        input.setPassword("test");
+        input.setUser(USER_NAME_DUMMY);
+        input.setPassword(PASSWORD_DUMMY);
 
         var expected = 401;
 
-        Mockito.when(mockLoginService.checkLogin("test","test")).thenReturn(false);
+        Mockito.when(mockLoginService.checkLogin(USER_NAME_DUMMY,PASSWORD_DUMMY)).thenReturn(false);
 
         //assert
         assertThrows(InvalidLoginException.class, () -> {

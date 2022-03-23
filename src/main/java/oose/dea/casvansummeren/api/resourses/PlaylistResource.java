@@ -1,6 +1,7 @@
 package oose.dea.casvansummeren.api.resourses;
 
-import oose.dea.casvansummeren.api.DTO.PlaylistDTO;
+import oose.dea.casvansummeren.DTO.PlaylistDTO;
+import oose.dea.casvansummeren.DTO.TrackDTO;
 import oose.dea.casvansummeren.api.interfaces.IPlaylistService;
 
 import javax.inject.Inject;
@@ -73,6 +74,31 @@ public class PlaylistResource {
         return Response
                 .status(Response.Status.OK)
                 .entity(playlistsResponse)
+                .build();
+    }
+
+    @POST
+    @Path("{id}/tracks")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response addTrackToPlaylist(@PathParam("id") int playlistId, TrackDTO track, @QueryParam("token") String token){
+        playlistService.addTrackToPlaylist(playlistId, track, token);
+        var trackResponse = playlistService.getTracks(playlistId, token);
+        return Response
+                .status(Response.Status.CREATED)
+                .entity(trackResponse)
+                .build();
+    }
+
+    @DELETE
+    @Path("{playlistId}/tracks/{trackId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response removeTrackFromPlaylist(@PathParam("playlistId") int playlistId, @PathParam("trackId") int trackId, @QueryParam("token") String token){
+        playlistService.removeTrackFromPlaylist(playlistId, trackId, token);
+        var trackResponse = playlistService.getTracks(playlistId, token);
+        return Response
+                .status(Response.Status.OK)
+                .entity(trackResponse)
                 .build();
     }
 }

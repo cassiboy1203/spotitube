@@ -1,6 +1,6 @@
 package oose.dea.casvansummeren.api.interfaces;
 
-import oose.dea.casvansummeren.api.DTO.LoginResponseDTO;
+import oose.dea.casvansummeren.DTO.LoginResponseDTO;
 
 public interface ILoginService{
     LoginResponseDTO generateResponse(String user);

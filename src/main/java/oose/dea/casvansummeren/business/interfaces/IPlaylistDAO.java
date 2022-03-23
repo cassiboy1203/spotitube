@@ -1,11 +1,11 @@
 package oose.dea.casvansummeren.business.interfaces;
 
-import oose.dea.casvansummeren.api.DTO.PlaylistDTO;
-import oose.dea.casvansummeren.api.DTO.TrackDTO;
+import oose.dea.casvansummeren.DTO.PlaylistDTO;
+import oose.dea.casvansummeren.DTO.TrackDTO;
 
 import java.util.List;
 
-public interface IPlaylistDAO {
+public interface IPlaylistDAO{
     List<PlaylistDTO> getPlaylists(int user);
 
     List<TrackDTO> getTracks(int id);
@@ -14,7 +14,9 @@ public interface IPlaylistDAO {
 
     void updatePlaylistName(int id, PlaylistDTO playlist);
 
-    int getPlaylistOwner(int id);
-
     void deletePlaylist(int id);
+
+    void addTrackToPlaylist(int playlistId, TrackDTO track);
+
+    void removeTrackFromPlaylist(int playlistId, int trackId);
 }

@@ -12,6 +12,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class AuthServiceTest {
 
+    private static final String TOKEN_DUMMY = "";
+    private static final int USER_ID_DUMMY = 1;
+
     AuthService sut;
     IAuthDAO mockAuthDAO;
 
@@ -39,10 +42,10 @@ class AuthServiceTest {
     void getUserWithCorrectTokenGivesBackUserID(){
         //assign
         var expected = 1;
-        Mockito.when(mockAuthDAO.getUserId("")).thenReturn(expected);
+        Mockito.when(mockAuthDAO.getUserId(TOKEN_DUMMY)).thenReturn(expected);
 
         //act
-        var actual = sut.getUser("");
+        var actual = sut.getUser(TOKEN_DUMMY);
 
         //assert
         assertEquals(expected, actual);
@@ -51,7 +54,7 @@ class AuthServiceTest {
     @Test
     void getUserWithWrongTokenThrowsUserNotFoundException(){
         //assign
-        Mockito.when(mockAuthDAO.getUserId("")).thenThrow(InvalidPermissionException.class);
+        Mockito.when(mockAuthDAO.getUserId(TOKEN_DUMMY)).thenThrow(InvalidPermissionException.class);
 
         //assert
         assertThrows(InvalidPermissionException.class, () ->{
@@ -63,8 +66,8 @@ class AuthServiceTest {
     @Test
     void saveUserExecutesSaveUserInAuthDAO(){
         //assign
-        var user = 1;
-        var token = "1234-1234-1234";
+        var user = USER_ID_DUMMY;
+        var token = TOKEN_DUMMY;
 
         //act
         sut.saveToken(token, user);

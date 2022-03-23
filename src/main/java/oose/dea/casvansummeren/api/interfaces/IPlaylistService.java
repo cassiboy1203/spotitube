@@ -1,11 +1,9 @@
 package oose.dea.casvansummeren.api.interfaces;
 
-import oose.dea.casvansummeren.api.DTO.PlaylistDTO;
-import oose.dea.casvansummeren.api.DTO.PlaylistsResponseDTO;
-import oose.dea.casvansummeren.api.DTO.TrackDTO;
-import oose.dea.casvansummeren.api.DTO.TrackResponseDTO;
-
-import java.util.List;
+import oose.dea.casvansummeren.DTO.PlaylistDTO;
+import oose.dea.casvansummeren.DTO.PlaylistsResponseDTO;
+import oose.dea.casvansummeren.DTO.TrackDTO;
+import oose.dea.casvansummeren.DTO.TrackResponseDTO;
 
 public interface IPlaylistService {
     PlaylistsResponseDTO getPlaylists(String token);
@@ -17,4 +15,8 @@ public interface IPlaylistService {
     void updatePlaylistName(int id, PlaylistDTO playlistDTO, String token);
 
     void deletePlaylist(int id, String token);
+
+    void addTrackToPlaylist(int playlistId, TrackDTO track, String token);
+
+    void removeTrackFromPlaylist(int playlistId, int trackId, String token);
 }

@@ -1,7 +1,7 @@
 package oose.dea.casvansummeren.business.services;
 
 import oose.dea.casvansummeren.api.interfaces.ILoginService;
-import oose.dea.casvansummeren.api.DTO.LoginResponseDTO;
+import oose.dea.casvansummeren.DTO.LoginResponseDTO;
 import oose.dea.casvansummeren.business.interfaces.ILoginDAO;
 
 import javax.enterprise.inject.Default;
@@ -20,7 +20,6 @@ public class LoginService extends SpotitubeService implements ILoginService {
     @Override
     public LoginResponseDTO generateResponse(String user) {
         var token = authService.generateToken();
-        //TODO: get user id
         authService.saveToken(token, 1);
         return new LoginResponseDTO(token, user);
     }

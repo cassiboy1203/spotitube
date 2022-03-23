@@ -1,9 +1,8 @@
 package oose.dea.casvansummeren.business.services;
 
 import oose.dea.casvansummeren.api.interfaces.IAuthService;
-import oose.dea.casvansummeren.business.UserDTO;
+import oose.dea.casvansummeren.DTO.UserDTO;
 import oose.dea.casvansummeren.business.interfaces.ILoginDAO;
-import oose.dea.casvansummeren.business.services.LoginService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -11,6 +10,10 @@ import org.mockito.Mockito;
 import static org.junit.jupiter.api.Assertions.*;
 
 class LoginServiceTest {
+
+    private static final String USER_NAME_DUMMY = "admin";
+    private static final String TOKEN_DUMMY = "1234-1234-1234";
+    private static final String PASSWORD_DUMMY = "admin";
 
     LoginService sut;
     IAuthService mockAuthService;
@@ -30,15 +33,15 @@ class LoginServiceTest {
     @Test
     void generateResponseReturnsUsernameAndARandomUUID(){
         //assign
-        var expectedUserName = "admin";
-        Mockito.when(mockAuthService.generateToken()).thenReturn("1234-1234-1234");
+        var expectedUserName = USER_NAME_DUMMY;
+        Mockito.when(mockAuthService.generateToken()).thenReturn(TOKEN_DUMMY);
 
         //act
-        var actual = sut.generateResponse("admin");
+        var actual = sut.generateResponse(USER_NAME_DUMMY);
 
         //assert
         assertEquals(expectedUserName, actual.getUser());
-        assertEquals("1234-1234-1234", actual.getToken());
+        assertEquals(TOKEN_DUMMY, actual.getToken());
     }
 
     @Test
@@ -46,12 +49,12 @@ class LoginServiceTest {
         //assign
         var userInfo = new UserDTO();
         userInfo.setId(1);
-        userInfo.setName("admin");
-        userInfo.setPassword("admin");
-        Mockito.when(mockLoginDao.getUser("admin")).thenReturn(userInfo);
+        userInfo.setName(USER_NAME_DUMMY);
+        userInfo.setPassword(PASSWORD_DUMMY);
+        Mockito.when(mockLoginDao.getUser(USER_NAME_DUMMY)).thenReturn(userInfo);
 
         //act
-        var actual = sut.checkLogin("admin", "admin");
+        var actual = sut.checkLogin(USER_NAME_DUMMY, PASSWORD_DUMMY);
 
         //assert
         assertTrue(actual);
@@ -61,13 +64,13 @@ class LoginServiceTest {
     void checkUserWrongInfoReturnsFalse(){
         //assign
         var userInfo = new UserDTO();
-        userInfo.setPassword("test");
+        userInfo.setPassword(PASSWORD_DUMMY);
         userInfo.setId(1);
-        userInfo.setName("test");
-        Mockito.when(mockLoginDao.getUser("test")).thenReturn(userInfo);
+        userInfo.setName(USER_NAME_DUMMY);
+        Mockito.when(mockLoginDao.getUser(USER_NAME_DUMMY)).thenReturn(userInfo);
 
         //act
-        var actual = sut.checkLogin("test", "test");
+        var actual = sut.checkLogin(USER_NAME_DUMMY, PASSWORD_DUMMY);
 
         //assert
         assertTrue(actual);
